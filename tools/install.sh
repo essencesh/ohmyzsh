@@ -56,6 +56,27 @@ HOME="${HOME:-$(eval echo ~$USER)}"
 # Track if $ZSH was provided
 custom_zsh=${ZSH:+yes}
 
+# Check if ZDOTDIR is not set
+if [ -z "$ZDOTDIR" ]; then
+    # Set ZDOTDIR to $HOME/.config/zsh
+    export ZDOTDIR="$HOME/.config/zsh"
+fi
+# Check if .zshenv file exists in $HOME
+if [ -e "$HOME/.zshenv" ]; then
+    # Check if ZDOTDIR is set correctly in .zshenv
+    if grep -q 'export ZDOTDIR="$HOME/.config/zsh"' "$HOME/.zshenv"; then
+        echo "ZDOTDIR is already set correctly in .zshenv"
+    else
+        # If not set correctly, update .zshenv
+        echo 'export ZDOTDIR="$HOME/.config/zsh"' >> "$HOME/.zshenv"
+        echo "Updated ZDOTDIR in .zshenv"
+    fi
+else
+    # If .zshenv file does not exist, create it and set ZDOTDIR
+    echo 'export ZDOTDIR="$HOME/.config/zsh"' > "$HOME/.zshenv"
+    echo "Created .zshenv and set ZDOTDIR"
+fi
+
 # Use $zdot to keep track of where the directory is for zsh dotfiles
 # To check if $ZDOTDIR was provided, explicitly check for $ZDOTDIR
 zdot="${ZDOTDIR:-$HOME}"
@@ -69,9 +90,9 @@ fi
 ZSH="${ZSH:-$HOME/.oh-my-zsh}"
 
 # Default settings
-REPO=${REPO:-ohmyzsh/ohmyzsh}
+REPO=${REPO:-Elyssy/ohmyzsh}
 REMOTE=${REMOTE:-https://github.com/${REPO}.git}
-BRANCH=${BRANCH:-master}
+BRANCH=${BRANCH:-main}
 
 # Other options
 CHSH=${CHSH:-yes}
@@ -313,7 +334,8 @@ setup_ohmyzsh() {
   && git config oh-my-zsh.branch "$BRANCH" \
   && git remote add origin "$REMOTE" \
   && git fetch --depth=1 origin \
-  && git checkout -b "$BRANCH" "origin/$BRANCH" || {
+  && git checkout -b "$BRANCH" "origin/$BRANCH" \
+  && git submodule update --init --recursive || {
     [ ! -d "$ZSH" ] || {
       cd -
       rm -rf "$ZSH" 2>/dev/null
@@ -367,7 +389,11 @@ setup_zshrc() {
   omz=$(echo "$omz" | sed "s|^$HOME/|\$HOME/|")
 
   sed "s|^export ZSH=.*$|export ZSH=\"${omz}\"|" "$ZSH/templates/zshrc.zsh-template" > "$zdot/.zshrc-omztemp"
+  sed "s|^export ZSH=.*$|export ZSH=\"${omz}\"|" "$ZSH/templates/p10k.zsh-template" > "$zdot/.p10k.zsh-omztemp"
+  sed "s|^export ZSH=.*$|export ZSH=\"${omz}\"|" "$ZSH/templates/zlogout.zsh-template" > "$zdot/.zlogout.zsh-omztemp"
   mv -f "$zdot/.zshrc-omztemp" "$zdot/.zshrc"
+  mv -f "$zdot/.p10k.zsh-omztemp" "$zdot/.p10k.zsh"
+  mv -f "$zdot/.zlogout.zsh-omztemp" "$zdot/.zlogout"
 
   echo
 }

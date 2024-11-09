@@ -92,7 +92,7 @@ ZSH="${ZSH:-$HOME/.oh-my-zsh}"
 # Default settings
 REPO=${REPO:-Elyssy/ohmyzsh}
 REMOTE=${REMOTE:-https://github.com/${REPO}.git}
-BRANCH=${BRANCH:-main}
+BRANCH=${BRANCH:-master}
 
 # Other options
 CHSH=${CHSH:-yes}

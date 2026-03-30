@@ -11,7 +11,12 @@ apps/
 # temp files directories
 cache/
 log/
+
+# Vim swap/backup files
 *.swp
+*.swo
+
+# macOS system files
 .DS_Store
 
 # editor configs
@@ -20,3 +25,4 @@ log/
 
 # zcompile cached files
 *.zwc
+*.zwc.old

@@ -28,7 +28,7 @@ jobs:
       - name: Sync fork
         uses: tgymnich/fork-sync@v2.0.10
         with:
-          token: ${{ secrets.FORK_SYNC_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           head: master
           base: master
           merge_method: merge
